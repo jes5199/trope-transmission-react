@@ -3,8 +3,10 @@ import React, { useState, useRef } from 'react';
 
 import './App.css';
 import DECTalk from './Views/DECTalk';
-import TropeCatalogue from './Views/TropeCatalogue.js';
+//import TropeCatalogue from './Views/TropeCatalogue.js';
 import VoicedWord from './Views/VoicedWord';
+import DecSungSyllable from './Models/DecSungSyllable';
+import DecPhoneticWord from './Models/DecPhoneticWord';
 
 function App() {
   //const [tropText, setTropText] = useState("טִפְחָ֖א");
@@ -12,9 +14,26 @@ function App() {
 
   const audioRef = useRef();
 
+
+  const melody = [            
+    ["g", 8, "upbeat"], 
+    ["a", 10],
+    ["C", 12],
+    ["g", 8]];
+
+  const pitchAndDurationPairs = [
+    [110, 4],
+    [123, 4],
+    [130, 4],
+    [146, 4],
+    [164, 2]
+  ];
+
+  const sing = new DecPhoneticWord("Paul", 170, [new DecSungSyllable(7, pitchAndDurationPairs, '~ll', "~ah", null)]);
+
   const decTalkTexts = [
     "hello",
-    "test"
+    sing.decTalk
   ];
 
   const decTalkText = selectedWord === null ? "" : decTalkTexts[selectedWord]

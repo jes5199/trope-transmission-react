@@ -1,5 +1,5 @@
 function cssColor(color) {
-    if (color == "pink") {
+    if (color === "pink") {
         return "#FE70FF"
     }
 }
