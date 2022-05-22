@@ -43,7 +43,7 @@ function App() {
   return (
     <div className="App">
       <div style={{fontSize: 48}}>
-      <VoicedWord color="pink" selected={selectedWord === 0} onClick={() => setSelectedWord(0)} onDoubleClick={() => audioRef.current?.play()} >טִפְחָ֖א</VoicedWord>
+      <VoicedWord color="pink" selected={selectedWord === 0} onClick={() => setSelectedWord(0)} onDoubleClick={() => {audioRef.current?.play()}}>טִפְחָ֖א</VoicedWord>
       </div>
 
       <div>

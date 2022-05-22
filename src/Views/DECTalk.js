@@ -17,7 +17,7 @@ function DECTalk({value, audioRef}) {
 
     return <div style={{margin: "20px"}} id={"decTalk " + value}>
         <div>
-            <textarea value={text} onChange={handleChange}></textarea>
+            <textarea readOnly cols="80" rows="5" value={text} onChange={handleChange}></textarea>
         </div>
         { audioUrl &&
         <div>

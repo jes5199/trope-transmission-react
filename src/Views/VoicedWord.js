@@ -11,13 +11,20 @@ function VoicedWord({value, color, selected, onClick, onDoubleClick, children}) 
     const backgroundColor = selected ? selectedColor : styleColor;
     const textColor = selected ? styleColor : "#000000";
 
+    const onMouseDown = function(e) {
+        if (e.detail > 1){
+            e.preventDefault();
+        }    
+    }
 
     return <span style={{
         backgroundColor: backgroundColor,
         color: textColor,
         fontSize: 48, padding: "5px", margin: "15px"}}
         onClick={onClick}
-        onDoubleClick={onDoubleClick}>
+        onDoubleClick={onDoubleClick}
+        onMouseDown={onMouseDown}
+        >
         {children}
     </span>
 
