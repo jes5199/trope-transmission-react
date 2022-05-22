@@ -7,6 +7,7 @@ import DECTalk from './Views/DECTalk';
 import VoicedWord from './Views/VoicedWord';
 import DecSungSyllable from './Models/DecSungSyllable';
 import DecPhoneticWord from './Models/DecPhoneticWord';
+import Melody from './Models/Melody';
 
 function App() {
   //const [tropText, setTropText] = useState("טִפְחָ֖א");
@@ -15,24 +16,25 @@ function App() {
   const audioRef = useRef();
 
 
-  const melody = [            
+  const melodyXml = [            
     ["g", 8, "upbeat"], 
     ["a", 10],
     ["C", 12],
     ["g", 8]];
 
-  const pitchAndDurationPairs = [
-    [110, 4],
-    [123, 4],
-    [130, 4],
-    [146, 4],
-    [164, 2]
-  ];
+  const melody = new Melody(melodyXml[0], melodyXml.slice(1));
+  const transpose = -6 + 1;
 
-  const sing = new DecPhoneticWord("Paul", 170, [new DecSungSyllable(7, pitchAndDurationPairs, '~ll', "~ah", null)]);
+  const speed = 3;
+  const rate = 20 + (15 * speed);
+
+  const sing = new DecPhoneticWord("Paul", rate, [
+      new DecSungSyllable(3, melody.upbeatPitchAndDurationPairs(transpose), '~t', "~iy", "~p"),
+      new DecSungSyllable(3, melody.pitchAndDurationPairs(transpose), '~cz', "~sp_o", null)
+    ]
+  );
 
   const decTalkTexts = [
-    "hello",
     sing.decTalk
   ];
 
@@ -42,7 +44,6 @@ function App() {
     <div className="App">
       <div style={{fontSize: 48}}>
       <VoicedWord color="pink" selected={selectedWord === 0} onClick={() => setSelectedWord(0)} onDoubleClick={() => audioRef.current?.play()} >טִפְחָ֖א</VoicedWord>
-      <VoicedWord color="pink" selected={selectedWord === 1} onClick={() => setSelectedWord(1)} onDoubleClick={() => audioRef.current?.play()}>טִפְחָ֖א</VoicedWord>
       </div>
 
       <div>
