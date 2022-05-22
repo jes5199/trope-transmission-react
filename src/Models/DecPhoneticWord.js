@@ -1,7 +1,7 @@
 class DecPhoneticWord {
     decTalk = "";
 
-    constructor(voice, rate, syllables) {
+    constructor(voice, rate, volume, syllables) {
         let phonemes = "";
 
         for (let syllable of syllables) {
@@ -12,7 +12,7 @@ class DecPhoneticWord {
             }
         }
 
-        this.decTalk =  "[:volume att 80] [:mode email on] [:comma -40] [:name "+voice+"] " 
+        this.decTalk =  "[:volume att "+volume+"] [:mode email on] [:comma -40] [:name "+voice+"] " 
         + "[:rate "+rate+"] [:phoneme arpabet speak on]" 
         + "[" + phonemes + "]"
     }

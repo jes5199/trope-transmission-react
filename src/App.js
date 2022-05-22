@@ -10,12 +10,14 @@ import DecPhoneticWord from './Models/DecPhoneticWord';
 import Melody from './Models/Melody';
 import SpeedSelect from './Views/SpeedSelect';
 import PitchSelect from './Views/PitchSelect';
+import VolumeSelect from './Views/VolumeSelect';
 
 function App() {
   //const [tropText, setTropText] = useState("טִפְחָ֖א");
   const [selectedWord, setSelectedWord] = useState(null);
   const [speed, setSpeed] = useState(10);
   const [pitch, setPitch] = useState(1);
+  const [volume, setVolume] = useState(5);
 
   const audioRef = useRef();
 
@@ -32,7 +34,9 @@ function App() {
 
   const rate = 20 + (15 * speed);
 
-  const sing = new DecPhoneticWord("Paul", rate, [
+  const volumePercent = 60 + volume * 4;
+
+  const sing = new DecPhoneticWord("Paul", rate, volumePercent, [
       new DecSungSyllable(speed, melody.upbeatPitchAndDurationPairs(transpose), '~t', "~iy", "~p"),
       new DecSungSyllable(speed, melody.pitchAndDurationPairs(transpose), '~cz', "~sp_o", null)
     ]
@@ -47,8 +51,9 @@ function App() {
   return (
     <div className="App">
       <div style={{padding:"15px"}}>
-        <SpeedSelect value={speed} onChange={setSpeed} />
         <PitchSelect value={pitch} onChange={setPitch} />
+        <SpeedSelect value={speed} onChange={setSpeed} />
+        <VolumeSelect value={volume} onChange={setVolume} />
       </div>
       <div style={{fontSize: 48}}>
       <VoicedWord color="pink" selected={selectedWord === 0} onClick={() => setSelectedWord(0)} onDoubleClick={() => {audioRef.current?.play()}}>טִפְחָ֖א</VoicedWord>
