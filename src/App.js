@@ -11,6 +11,9 @@ import Melody from './Models/Melody';
 import SpeedSelect from './Views/SpeedSelect';
 import PitchSelect from './Views/PitchSelect';
 import VolumeSelect from './Views/VolumeSelect';
+import RangeSelect from './Views/RangeSelect';
+import VoicePitchOffsets from './Data/VoicePitchOffsets';
+import DecVoiceRanges from './Data/DecVoiceRanges';
 
 function App() {
   //const [tropText, setTropText] = useState("טִפְחָ֖א");
@@ -18,6 +21,7 @@ function App() {
   const [speed, setSpeed] = useState(10);
   const [pitch, setPitch] = useState(1);
   const [volume, setVolume] = useState(5);
+  const [range, setRange] = useState("Baritone");
 
   const audioRef = useRef();
 
@@ -28,15 +32,18 @@ function App() {
     ["g", 8]];
 
   const melody = new Melody(melodyXml[0], melodyXml.slice(1));
-  console.log(pitch);
-  const transpose = (pitch || 0) - 6 + 1;
-  console.log(transpose);
 
   const rate = 20 + (15 * speed);
 
   const volumePercent = 60 + volume * 4;
 
-  const sing = new DecPhoneticWord("Paul", rate, volumePercent, [
+  const tropeDefPitchbend = 1;
+
+  const voice = DecVoiceRanges[range];
+  const voiceOffset = VoicePitchOffsets[range];
+  const transpose = (pitch - 0) + voiceOffset + tropeDefPitchbend;
+
+  const sing = new DecPhoneticWord(voice, rate, volumePercent, [
       new DecSungSyllable(speed, melody.upbeatPitchAndDurationPairs(transpose), '~t', "~iy", "~p"),
       new DecSungSyllable(speed, melody.pitchAndDurationPairs(transpose), '~cz', "~sp_o", null)
     ]
@@ -51,6 +58,7 @@ function App() {
   return (
     <div className="App">
       <div style={{padding:"15px"}}>
+        <RangeSelect value={range} onChange={setRange} />
         <PitchSelect value={pitch} onChange={setPitch} />
         <SpeedSelect value={speed} onChange={setSpeed} />
         <VolumeSelect value={volume} onChange={setVolume} />
