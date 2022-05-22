@@ -19,7 +19,7 @@ function App() {
   //const [tropText, setTropText] = useState("טִפְחָ֖א");
   const [selectedWord, setSelectedWord] = useState(null);
   const [speed, setSpeed] = useState(10);
-  const [pitch, setPitch] = useState(1);
+  const [pitch, setPitch] = useState(0);
   const [volume, setVolume] = useState(5);
   const [range, setRange] = useState("Baritone");
 
