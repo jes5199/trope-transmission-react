@@ -1,9 +1,8 @@
 class TropeDefCatalog {
-    defs = {
-    }
+    defs = {}
 
     addTropeDef(tropeDef) {
-        defs[tropeDef.name] = tropeDef
+        this.defs[tropeDef.name] = tropeDef;
     }
 
     names() {
@@ -12,6 +11,13 @@ class TropeDefCatalog {
 
     byName(name) {
         return this.defs[name];
+    }
+
+    fromXml(xml) {
+        Array.from(xml.getElementsByTagName("TROPEDEF")).forEach((element) => {
+            this.addTropeDef( new TropeDef().fromXml(element) );
+        });
+        return this;
     }
 }
 
@@ -35,6 +41,19 @@ class TropeDef {
         this.assimilateRhythm = assimilateRhythm
         this.description = description
     }
+
+    fromXml(element) {
+        //console.log(element);
+        this.name = element.getAttribute('NAME');
+        this.type = element.getAttribute('TYPE');
+        this.encoding = element.getAttribute('ENCODING');
+        this.pitchbend = element.getAttribute('PITCHBEND');
+        this.key = element.getAttribute('KEY');
+        this.assimilatePitch = element.getAttribute('ASSIMILATE_PITCH');
+        this.assimilateRhythm = element.getAttribute('ASSIMILATE_RHYTHM');
+        this.description = element.getAttribute('DESCRIPTION');
+        return this;
+    }
 }
 
 class Trope {
@@ -52,12 +71,36 @@ class TropeNote {
 class TropeDefXml {
     path = ""
     xml = null
+    tropeDefCatalog = null
 
     constructor(path) {
-        this.path = path
+        this.path = path || "/tropedef.xml"
+        this.tropeDefCatalog = new TropeDefCatalog()
     }
 
-    fetch() {
-        this.xml = "TODO"
+    fetch(callback) {
+        var xhttp = new XMLHttpRequest();
+        var self = this;
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                self.processResponse(this, callback);
+            }
+          };
+        
+          xhttp.open("GET", this.path, true);
+          xhttp.send();
+    }
+
+    processResponse(response, callback) {
+        this.xml = response.responseXML;
+        this.processXml(this.xml);
+        callback(this.tropeDefCatalog);
+    }
+
+    processXml(xml) {
+        this.tropeDefCatalog = new TropeDefCatalog();
+        this.tropeDefCatalog.fromXml(xml)
     }
 }
+
+export {TropeDefXml}

@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import './App.css';
 import DECTalk from './Views/DECTalk';
@@ -8,12 +8,14 @@ import VoicedWord from './Views/VoicedWord';
 import DecSungSyllable from './Models/DecSungSyllable';
 import DecPhoneticWord from './Models/DecPhoneticWord';
 import Melody from './Models/Melody';
+import MelodySelect from './Views/MelodySelect';
 import SpeedSelect from './Views/SpeedSelect';
 import PitchSelect from './Views/PitchSelect';
 import VolumeSelect from './Views/VolumeSelect';
 import RangeSelect from './Views/RangeSelect';
 import VoicePitchOffsets from './Data/VoicePitchOffsets';
 import DecVoiceRanges from './Data/DecVoiceRanges';
+import {TropeDefXml} from './Models/TropeDef';
 
 function App() {
   //const [tropText, setTropText] = useState("טִפְחָ֖א");
@@ -22,6 +24,16 @@ function App() {
   const [pitch, setPitch] = useState(0);
   const [volume, setVolume] = useState(5);
   const [range, setRange] = useState("Baritone");
+  const [tropeMelody, setTropeMelody] = useState("Ashkenazic - Avery/Binder High Sof Pasuk");
+
+  const [tropeDefCatalog, setTropeDefCatalog] = useState();
+
+  useEffect(() => {
+    let tropeDefXml = new TropeDefXml();
+    tropeDefXml.fetch((catalog) => {
+      setTropeDefCatalog(catalog);
+    });
+  }, []);
 
   const audioRef = useRef();
 
@@ -57,6 +69,9 @@ function App() {
 
   return (
     <div className="App">
+      <div style={{padding:"15px"}}>
+        <MelodySelect tropeDefCatalog={tropeDefCatalog} value={tropeMelody} onChange={setTropeMelody}/>
+      </div>
       <div style={{padding:"15px"}}>
         <RangeSelect value={range} onChange={setRange} />
         <PitchSelect value={pitch} onChange={setPitch} />
