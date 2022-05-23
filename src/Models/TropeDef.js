@@ -1,8 +1,12 @@
+import Melody from "./Melody";
+
 class TropeDefCatalog {
     defs = {}
 
     addTropeDef(tropeDef) {
-        this.defs[tropeDef.name] = tropeDef;
+        if (tropeDef.type === "Torah" ) {
+            this.defs[tropeDef.name] = tropeDef;
+        }
     }
 
     names() {
@@ -30,6 +34,7 @@ class TropeDef {
     assimilatePitch = false
     assimilateRhythm = false
     description = ""
+    tropes = []
 
     constructor(name, type, encoding, pitchbend, key, assimilatePitch, assimilateRhythm, description) {
         this.name = name
@@ -52,20 +57,74 @@ class TropeDef {
         this.assimilatePitch = element.getAttribute('ASSIMILATE_PITCH');
         this.assimilateRhythm = element.getAttribute('ASSIMILATE_RHYTHM');
         this.description = element.getAttribute('DESCRIPTION');
+        this.tropes = Array.from(element.getElementsByTagName('TROPE')).map(element => new Trope().fromXml(element, this));
         return this;
+    }
+
+    byName(name) {
+        let matches = this.tropes.filter(tr => tr.name === name);
+        if (matches.length > 1) {
+            console.log("multiple entries for " + name);
+        }
+        return matches[0];
     }
 }
 
 class Trope {
+    tropeDef = null
     name = ""
+    melodies = []
+
+    fromXml(element, tropeDef) {
+        this.tropeDef = tropeDef
+        this.name = element.getAttribute('NAME');
+        this.melodies = Array.from(element.getElementsByTagName('CONTEXT')).map(element => new TropeMelody().fromXml(element));
+        return this;
+    }
+
+    default() {
+        let matches = this.melodies.filter(melody => melody.default);
+
+        if (matches.length > 1) {
+            console.log("multiple defaults for " + this.name);
+        }
+        return matches[0];
+    }
 }
 
-class TropeContext {
+class TropeMelody {
+    rules = {}
+    upbeatNotes = []
+    notes = []
+    default = false
 
-}
+    fromXml(element) {
+        if (element.getAttribute("DEFAULT")) {
+            this.default = element.getAttribute("DEFAULT");
+        }
+        Array.from(element.getAttributeNames()).forEach((attribute) => {
+            this.rules[attribute] = element.getAttribute(attribute);
+        });
+        this.upbeatNotes = []
+        this.notes = []    
+        Array.from(element.getElementsByTagName('NOTE')).forEach((noteElement) => {
+            let pitch = noteElement.getAttribute("PITCH");
+            let duration = noteElement.getAttribute("DURATION");
+            let isUpbeat = noteElement.getAttribute("UPBEAT");
 
-class TropeNote {
+            let pair = [pitch, duration];
+            if (isUpbeat) {
+                this.upbeatNotes.push(pair);
+            } else {
+                this.notes.push(pair);
+            }
+        })
+        return this;
+    }
 
+    melody() {
+        return new Melody(this.upbeatNotes[0], this.notes);
+    }
 }
 
 class TropeDefXml {
@@ -82,7 +141,7 @@ class TropeDefXml {
         var xhttp = new XMLHttpRequest();
         var self = this;
         xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
+            if (this.readyState === 4 && this.status === 200) {
                 self.processResponse(this, callback);
             }
           };

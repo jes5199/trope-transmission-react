@@ -37,19 +37,27 @@ function App() {
 
   const audioRef = useRef();
 
+  // TODO: based upon the trope name and the chosen trope melody
+  //       find the variations available for the individual melody
+  //       show UI to choose them
+  //       and pull the notes out to assign to the syllable
   const melodyXml = [            
     ["g", 8, "upbeat"], 
     ["a", 10],
     ["C", 12],
     ["g", 8]];
 
-  const melody = new Melody(melodyXml[0], melodyXml.slice(1));
+  const tropeDef = tropeDefCatalog?.byName(tropeMelody);
+  const tropeDefPitchbend = tropeDef ? tropeDef.pitchbend - 0 : 1;
+
+  console.log(tropeDef?.byName("TIPCHA").default());
+
+  const melody = tropeDef?.byName("TIPCHA")?.default()?.melody() || new Melody(melodyXml[0], melodyXml.slice(1));
 
   const rate = 20 + (15 * speed);
 
   const volumePercent = 60 + volume * 4;
 
-  const tropeDefPitchbend = 1;
 
   const voice = DecVoiceRanges[range];
   const voiceOffset = VoicePitchOffsets[range];
@@ -80,6 +88,12 @@ function App() {
       </div>
       <div style={{fontSize: 48}}>
       <VoicedWord color="pink" selected={selectedWord === 0} onClick={() => setSelectedWord(0)} onDoubleClick={() => {audioRef.current?.play()}}>טִפְחָ֖א</VoicedWord>
+      </div>
+
+      <div style={{padding: "50px"}} />
+
+      <div style={{padding:"15px"}}>
+        {JSON.stringify(melody.noteAndDurationPairs)}
       </div>
 
       <div>

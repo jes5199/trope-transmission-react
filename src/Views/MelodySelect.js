@@ -3,7 +3,7 @@ function MelodySelect({tropeDefCatalog, onChange, value}) {
         <label htmlFor="melody">melody: </label>
         <select id="melody" name="melody" value={value} onChange={(e) => onChange(e.target.value)}>
             {Object.keys(tropeDefCatalog?.defs || {}).map((tropeDefName) => 
-                <option value={tropeDefName}>{tropeDefName}</option>
+                <option value={tropeDefName} key={tropeDefName}>{tropeDefName}</option>
             )}
         </select>
     </span>
