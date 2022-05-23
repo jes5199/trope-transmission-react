@@ -93,7 +93,7 @@ function App() {
       <div style={{padding: "50px"}} />
 
       <div style={{padding:"15px"}}>
-        {JSON.stringify(melody.noteAndDurationPairs)}
+        {JSON.stringify([melody.upbeatNoteAndDuration, melody.noteAndDurationPairs])}
       </div>
 
       <div>
